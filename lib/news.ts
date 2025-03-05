@@ -7,7 +7,7 @@ export const allNews = [
     image:
       "https://images.ctfassets.net/8urtyqugdt2l/an332LVc89C33kZl3zNAp/cc364829dedecb7dde2ef092c289c2bc/desktop-bulgarian-split-squats.jpg",
     likes: 245,
-    date: "March 15, 2023",
+    date: "March 5, 2025",
     content: `
       <p>Building muscle requires consistent effort both in the gym and in the kitchen. Here are the 10 best exercises that should be part of any muscle-building routine:</p>
       
@@ -35,7 +35,7 @@ export const allNews = [
     image:
       "https://i0.wp.com/www.muscleandfitness.com/wp-content/uploads/2019/07/Male-Stretching-Shadow.jpg?quality=86&strip=all",
     likes: 189,
-    date: "5 days ago",
+    date: "Feb 24, 2025",
     content: `
       <p>Post-workout recovery is just as important as the workout itself. Proper nutrition plays a crucial role in muscle repair and energy replenishment.</p>
 
@@ -65,7 +65,7 @@ export const allNews = [
     image:
       "https://cdn.shopify.com/s/files/1/1214/7132/files/Woman_sweting_on_dumbells.jpg?v=1706282619",
     likes: 312,
-    date: "1 week ago",
+    date: "22 Jan, 2025",
     content: `
       <p>High-Intensity Interval Training (HIIT) is one of the most efficient workout methods for burning fat and improving cardiovascular health. But what makes it so effective?</p>
 
