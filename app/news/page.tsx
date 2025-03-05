@@ -5,39 +5,7 @@ import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Heart } from "lucide-react";
-
-export const allNews = [
-  {
-    id: 1,
-    title: "10 Best Exercises for Building Muscle",
-    summary:
-      "Discover the most effective exercises to build muscle mass quickly and efficiently.",
-    image:
-      "https://images.ctfassets.net/8urtyqugdt2l/an332LVc89C33kZl3zNAp/cc364829dedecb7dde2ef092c289c2bc/desktop-bulgarian-split-squats.jpg",
-    likes: 245,
-    date: "2 days ago",
-  },
-  {
-    id: 2,
-    title: "Nutrition Tips for Better Recovery",
-    summary:
-      "Learn how proper nutrition can significantly improve your post-workout recovery time.",
-    image:
-      "https://i0.wp.com/www.muscleandfitness.com/wp-content/uploads/2019/07/Male-Stretching-Shadow.jpg?quality=86&strip=all",
-    likes: 189,
-    date: "5 days ago",
-  },
-  {
-    id: 3,
-    title: "The Science Behind HIIT Workouts",
-    summary:
-      "Understanding why High-Intensity Interval Training is so effective for fat loss and fitness.",
-    image:
-      "https://cdn.shopify.com/s/files/1/1214/7132/files/Woman_sweting_on_dumbells.jpg?v=1706282619",
-    likes: 312,
-    date: "1 week ago",
-  },
-];
+import { allNews } from "@/lib/news";
 
 export default function NewsPage() {
   const [activeTab, setActiveTab] = useState("all");
@@ -49,10 +17,18 @@ export default function NewsPage() {
     <div className="container px-4 py-6 space-y-6 animate-in">
       <h1 className="text-2xl font-bold">News</h1>
 
-      <Tabs defaultValue="all" className="w-full" onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="all">All News</TabsTrigger>
-          <TabsTrigger value="favorites">Favorites</TabsTrigger>
+      <Tabs
+        defaultValue="all"
+        className="w-full rounded-[6px]"
+        onValueChange={setActiveTab}
+      >
+        <TabsList className="grid w-full grid-cols-2 rounded-[6px]">
+          <TabsTrigger value="all" className="rounded-[6px]">
+            All News
+          </TabsTrigger>
+          <TabsTrigger value="favorites" className="rounded-[6px]">
+            Favorites
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="all" className="mt-4 space-y-4">
@@ -109,13 +85,15 @@ function NewsCard({
   delay: number;
 }) {
   return (
-    <Card className={`overflow-hidden animate-in-delay-${delay}`}>
+    <Card
+      className={`overflow-hidden animate-in-delay-${delay} rounded-[12px_12px_0_0]`}
+    >
       <Link href={`/news/${news.id}`}>
-        <div className="aspect-[2/1] relative">
+        <div className="aspect-[2/1] relative rounded-[12px_12px_0_0]">
           <img
             src={news.image || "/placeholder.svg"}
             alt={news.title}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover rounded-[12px_12px_0_0]"
           />
         </div>
       </Link>

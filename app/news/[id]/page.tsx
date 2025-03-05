@@ -4,66 +4,62 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Heart, ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { allNews } from "../page";
+import { allNews } from "@/lib/news";
+import Link from "next/link";
 
 export default function NewsDetailPage({ params }: { params: { id: string } }) {
   const router = useRouter();
   const [isLiked, setIsLiked] = useState(false);
 
-  const findedImg = allNews.find(
+  const article = allNews.find(
     (news) => news.id === Number.parseInt(params.id)
   );
-  // In a real app, you would fetch this data based on the ID
-  const article = {
-    id: Number.parseInt(params.id),
-    title: "10 Best Exercises for Building Muscle",
-    content: `
-      <p>Building muscle requires consistent effort both in the gym and in the kitchen. Here are the 10 best exercises that should be part of any muscle-building routine:</p>
-      
-      <h2>1. Squats</h2>
-      <p>The king of all exercises, squats work your entire lower body and core. They also trigger a strong hormonal response that aids in overall muscle growth.</p>
-      
-      <h2>2. Deadlifts</h2>
-      <p>Another compound movement that engages multiple muscle groups simultaneously. Deadlifts build strength in your posterior chain, including your back, glutes, and hamstrings.</p>
-      
-      <h2>3. Bench Press</h2>
-      <p>The standard for chest development, bench presses also work your shoulders and triceps.</p>
-      
-      <h2>4. Pull-ups</h2>
-      <p>One of the best exercises for back development, pull-ups also engage your biceps and shoulders.</p>
-      
-      <h2>5. Overhead Press</h2>
-      <p>This exercise builds impressive shoulder strength and size while also engaging your triceps and upper chest.</p>
-    `,
-    image: findedImg?.image,
-    likes: 245,
-    date: "March 15, 2023",
+
+  const addNewsStats = () => {
+    router.push(`/news`);
+    const newsNumber = JSON.parse(localStorage.getItem("newsNumber") || "0");
+    localStorage.setItem("exerciseTotalTime", JSON.stringify(+newsNumber + 1));
+    const readQuantityNews = JSON.parse(
+      localStorage.getItem("readQuantityNews") || "0"
+    );
+    localStorage.setItem("exercises", JSON.stringify(readQuantityNews + 1));
   };
+  // const addNewsStats = () => {
+  //   const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
+  //   const newsStats = JSON.parse(localStorage.getItem("newsStats") || "{}");
+
+  //   if (!newsStats[today]) {
+  //     newsStats[today] = 0;
+  //   }
+
+  //   newsStats[today] += 1;
+
+  //   localStorage.setItem("newsStats", JSON.stringify(newsStats));
+  //   router.push(`/news`);
+  // };
 
   return (
     <div className="container px-4 py-6 space-y-6 animate-in">
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={() => router.back()}
-        className="mb-2"
-      >
-        <ArrowLeft className="w-5 h-5" />
-      </Button>
+      <Link href={`/news`}>
+        <div className="flex gap-2 text-gray-400">
+          <ArrowLeft className="w-6 h-6" />
+          <span className="text-[18px] leading-6 font-medium">Back</span>
+        </div>
+      </Link>
 
       <div className="aspect-[2/1] relative rounded-lg overflow-hidden">
         <img
-          src={article.image || "/placeholder.svg"}
-          alt={article.title}
+          src={article?.image || "/placeholder.svg"}
+          alt={article?.title}
           className="w-full h-full object-cover"
         />
       </div>
 
       <div className="space-y-4">
-        <h1 className="text-2xl font-bold">{article.title}</h1>
+        <h1 className="text-2xl font-bold">{article?.title}</h1>
 
         <div className="flex items-center justify-between text-sm">
-          <div className="text-muted-foreground">{article.date}</div>
+          <div className="text-muted-foreground">{article?.date}</div>
           <div className="flex items-center gap-1">
             <button onClick={() => setIsLiked(!isLiked)} className="p-1">
               <Heart
@@ -74,15 +70,23 @@ export default function NewsDetailPage({ params }: { params: { id: string } }) {
                 }`}
               />
             </button>
-            <span>{isLiked ? article.likes + 1 : article.likes}</span>
+            <span>{isLiked ? (article?.likes ?? 0) + 1 : article?.likes}</span>
           </div>
         </div>
 
         <div
-          className="prose prose-invert max-w-none prose-headings:text-primary prose-headings:font-semibold prose-p:text-muted-foreground"
-          dangerouslySetInnerHTML={{ __html: article.content }}
+          className="prose prose-invert max-w-none prose-headings:text-primary prose-headings:font-semibold prose-p:text-muted-foreground
+          flex flex-col gap-4
+          "
+          dangerouslySetInnerHTML={{ __html: article?.content ?? "" }}
         />
       </div>
+      <button
+        onClick={addNewsStats}
+        className="mt-8 rounded-[12px] w-full bg-primary text-primary-foreground hover:bg-primary/90 py-2 px-4"
+      >
+        Back to News
+      </button>
     </div>
   );
 }

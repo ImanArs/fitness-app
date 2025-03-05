@@ -2,94 +2,69 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/card";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Pause, Play } from "lucide-react";
-import { allNews } from "@/app/news/page";
+import { workouts } from "@/lib/workout";
 
 export default function WorkoutStartPage({
   params,
 }: {
   params: { id: string };
 }) {
-  const findedImg = allNews?.find(
-    (news) => news.id === Number.parseInt(params.id)
-  );
   const router = useRouter();
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(3); // in seconds
+  const [timeLeft, setTimeLeft] = useState(3); // Initial countdown
   const [isResting, setIsResting] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [workoutComplete, setWorkoutComplete] = useState(false);
 
-  // In a real app, you would fetch this data based on the ID
-  const workout = {
-    id: Number.parseInt(params.id),
-    title: "Full Body Workout",
-    exercises: [
-      {
-        id: 1,
-        name: "Push-ups",
-        duration: 5, // in seconds
-        image: findedImg?.image,
-      },
-      {
-        id: 2,
-        name: "Squats",
-        duration: 6,
-        image: findedImg?.image,
-      },
-      {
-        id: 3,
-        name: "Lunges",
-        duration: 4,
-        image: findedImg?.image,
-      },
-    ],
-  };
+  const workout: any = workouts?.find(
+    (workout) => workout.id === Number.parseInt(params.id)
+  );
 
-  const currentExercise = workout.exercises[currentExerciseIndex];
-  const restTime = 3; // in seconds
+  const restTime = 3;
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    if (isPaused || workoutComplete) return;
 
-    if (!isPaused && !workoutComplete) {
-      interval = setInterval(() => {
-        setTimeLeft((prevTime) => {
-          if (prevTime <= 1) {
-            // Time's up for current exercise or rest
-            if (isResting) {
-              // Rest is over, move to next exercise
-              if (currentExerciseIndex < workout.exercises.length - 1) {
-                setCurrentExerciseIndex((prev) => prev + 1);
-                setIsResting(false);
-                return workout.exercises[currentExerciseIndex + 1].duration;
-              } else {
-                // Workout complete
-                setWorkoutComplete(true);
-                return 0;
-              }
-            } else {
-              // Exercise is over, start rest
-              setIsResting(true);
-              return restTime;
-            }
-          }
-          return prevTime - 1;
-        });
-      }, 1000);
-    }
+    const interval = setInterval(() => {
+      setTimeLeft((prevTime) => prevTime - 1);
+    }, 1000);
 
     return () => clearInterval(interval);
-  }, [
-    isPaused,
-    isResting,
-    currentExerciseIndex,
-    workout.exercises,
-    workoutComplete,
-  ]);
+  }, [isPaused, workoutComplete]);
+
+  useEffect(() => {
+    if (timeLeft > 0) return;
+
+    if (isResting) {
+      // Переход из отдыха к следующему упражнению
+      setIsResting(false);
+      setCurrentExerciseIndex((prevIndex) => {
+        const nextIndex = prevIndex + 1;
+        if (nextIndex < workout.exercises.length) {
+          setTimeLeft(workout.exercises[nextIndex].duration);
+          return nextIndex;
+        } else {
+          setWorkoutComplete(true);
+          return prevIndex;
+        }
+      });
+    } else {
+      // Переход от упражнения к отдыху
+      setIsResting(true);
+      setTimeLeft(restTime);
+    }
+  }, [timeLeft, isResting]);
+
+  useEffect(() => {
+    if (!isResting) {
+      setTimeLeft(workout.exercises[currentExerciseIndex].duration);
+    }
+  }, [currentExerciseIndex, isResting, workout.exercises]);
+
+  const currentExercise = workout?.exercises[currentExerciseIndex] ?? null;
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -97,9 +72,24 @@ export default function WorkoutStartPage({
     return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
   };
 
+  const addScoreExercise = () => {
+    const exerciseNumber = JSON.parse(localStorage.getItem("exercises") || "0");
+    const exerciseTotalTime = JSON.parse(
+      localStorage.getItem("exerciseTotalTime") || "0"
+    );
+
+    localStorage.setItem(
+      "exerciseTotalTime",
+      JSON.stringify(+exerciseTotalTime + workout.duration)
+    );
+    localStorage.setItem("exercises", JSON.stringify(exerciseNumber + 1));
+    router.push("/");
+  };
+
   const progress = isResting
     ? ((restTime - timeLeft) / restTime) * 100
-    : ((currentExercise.duration - timeLeft) / currentExercise.duration) * 100;
+    : ((currentExercise?.duration - timeLeft) / currentExercise?.duration) *
+      100;
 
   if (workoutComplete) {
     return (
@@ -110,12 +100,12 @@ export default function WorkoutStartPage({
           <p className="text-muted-foreground">
             Great job! You've completed the {workout.title}.
           </p>
-          <Button
-            onClick={() => router.push("/")}
-            className="mt-8 w-full bg-primary text-primary-foreground hover:bg-primary/90 py-2 px-4 rounded-md"
+          <button
+            onClick={addScoreExercise}
+            className="mt-8 rounded-[12px] w-full bg-primary text-primary-foreground hover:bg-primary/90 py-2 px-4"
           >
             Back to Home
-          </Button>
+          </button>
         </div>
       </div>
     );
@@ -124,35 +114,39 @@ export default function WorkoutStartPage({
   return (
     <div className="container px-4 py-6 space-y-6 animate-in">
       <div className="text-center">
-        <h1 className="text-xl font-bold">
-          {isResting ? "Rest Time" : currentExercise.name}
-        </h1>
         <p className="text-muted-foreground">
           {isResting
             ? "Take a break"
-            : `Exercise ${currentExerciseIndex + 1} of ${
-                workout.exercises.length
+            : `Exercise ${currentExerciseIndex + 1}/${
+                workout?.exercises.length
               }`}
         </p>
+        <h1 className="text-xl font-bold">
+          {isResting ? "Rest Time" : currentExercise?.name}
+        </h1>
       </div>
-
       {!isResting && (
-        <div className="aspect-[2/1] relative rounded-lg overflow-hidden">
+        <p className="text-[14px] leading-4 text-gray-400 m-0">
+          {currentExercise?.description}
+        </p>
+      )}
+      {!isResting && (
+        <div className="relative rounded-lg overflow-hidden">
           <img
-            src={currentExercise.image || "/placeholder.svg"}
-            alt={currentExercise.name}
-            className="w-full h-full object-cover"
+            src={currentExercise?.image || "/placeholder.svg"}
+            alt={currentExercise?.name}
+            className="w-full h-full max-h-[220px] object-cover rounded-[12px]"
           />
         </div>
       )}
 
-      <Card className="animate-in-delay-100">
-        <CardContent className="p-6 flex flex-col items-center">
-          <div className="text-5xl font-bold mb-6">{formatTime(timeLeft)}</div>
+      <Card className="animate-in-delay-100 border-0">
+        <CardContent className="p-2 flex flex-col items-center">
+          <div className="text-5xl font-bold mb-2">{formatTime(timeLeft)}</div>
           <Progress value={progress} className="w-full h-2" />
 
-          <div className="flex gap-4 mt-8">
-            <Button
+          <div className="flex gap-4 mt-2">
+            <button
               onClick={() => setIsPaused(!isPaused)}
               className="bg-primary text-primary-foreground hover:bg-primary/90 py-2 px-4 rounded-full h-12 w-12 flex items-center justify-center"
             >
@@ -161,7 +155,7 @@ export default function WorkoutStartPage({
               ) : (
                 <Pause className="w-5 h-5" />
               )}
-            </Button>
+            </button>
           </div>
         </CardContent>
       </Card>
