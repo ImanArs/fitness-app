@@ -1,5 +1,10 @@
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function SettingsPage() {
   const faqs = [
@@ -23,13 +28,13 @@ export default function SettingsPage() {
       answer:
         "We're working on integration with popular fitness apps and wearables. This feature will be available soon.",
     },
-  ]
+  ];
 
   return (
     <div className="container px-4 py-6 space-y-6 animate-in">
       <h1 className="text-2xl font-bold">Settings</h1>
 
-      <Card className="animate-in-delay-100">
+      <Card className="animate-in-delay-100 rounded-[12px]">
         <CardHeader>
           <CardTitle>Frequently Asked Questions</CardTitle>
         </CardHeader>
@@ -45,23 +50,26 @@ export default function SettingsPage() {
         </CardContent>
       </Card>
 
-      <Card className="animate-in-delay-200">
+      <Card className="animate-in-delay-200 rounded-[12px]">
         <CardHeader>
           <CardTitle>Privacy Policy</CardTitle>
         </CardHeader>
         <CardContent className="text-sm text-muted-foreground space-y-4">
           <p>
-            Our fitness app is committed to protecting your privacy. We collect minimal data necessary to provide our
-            services.
+            Our Stay Strong app is committed to protecting your privacy. We
+            collect minimal data necessary to provide our services.
           </p>
           <p>
-            We do not sell your personal information to third parties. Your workout data is stored securely and used
-            only to improve your experience.
+            We do not sell your personal information to third parties. Your
+            workout data is stored securely and used only to improve your
+            experience.
           </p>
-          <p>You can request deletion of your account and associated data at any time through the app settings.</p>
+          <p>
+            You can request deletion of your account and associated data at any
+            time through the app settings.
+          </p>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
-

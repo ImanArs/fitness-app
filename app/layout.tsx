@@ -1,21 +1,20 @@
-import type React from "react"
-import type { Metadata } from "next"
-import { Inter } from "next/font/google"
-import "./globals.css"
-import BottomNavigation from "@/components/bottom-navigation"
+import type React from "react";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
+import BottomNavigation from "@/components/bottom-navigation";
 
-const inter = Inter({ subsets: ["latin"] })
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Fitness App",
+  title: "Stay Strong",
   description: "Track your workouts and stay updated with fitness news",
-    generator: 'v0.dev'
-}
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
   return (
     <html lang="en">
@@ -24,9 +23,7 @@ export default function RootLayout({
         <BottomNavigation />
       </body>
     </html>
-  )
+  );
 }
 
-
-
-import './globals.css'
+import "./globals.css";

@@ -1,17 +1,41 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Heart } from "lucide-react";
 import { allNews } from "@/lib/news";
+import { set } from "react-hook-form";
 
 export default function NewsPage() {
   const [activeTab, setActiveTab] = useState("all");
-  const [likedPosts, setLikedPosts] = useState<number[]>([2]);
+  const [likedPosts, setLikedPosts] = useState<number[]>([]);
+  const [favoritePosts, setFavoritePosts] = useState([]);
 
-  const favoriteNews = allNews.filter((news) => likedPosts.includes(news.id));
+  useEffect(() => {
+    const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+    setFavoritePosts(favorites);
+    setLikedPosts(favorites.map((fav: any) => fav.id));
+  }, []);
+
+  const handleLike = (news: any) => {
+    const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+    let updatedFavorites;
+    if (favorites.some((fav: any) => fav.id === news.id)) {
+      updatedFavorites = favorites.filter((fav: any) => fav.id !== news.id);
+    } else {
+      updatedFavorites = [...favorites, news];
+    }
+    localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+    setFavoritePosts(updatedFavorites);
+
+    if (likedPosts.some((id) => id === news.id)) {
+      setLikedPosts(likedPosts.filter((id) => id !== news.id));
+    } else {
+      setLikedPosts([...likedPosts, news.id]);
+    }
+  };
 
   return (
     <div className="container px-4 py-6 space-y-6 animate-in">
@@ -37,28 +61,20 @@ export default function NewsPage() {
               key={news.id}
               news={news}
               isLiked={likedPosts.includes(news.id)}
-              onLike={() => {
-                if (likedPosts.includes(news.id)) {
-                  setLikedPosts(likedPosts.filter((id) => id !== news.id));
-                } else {
-                  setLikedPosts([...likedPosts, news.id]);
-                }
-              }}
+              onLike={() => handleLike(news)}
               delay={index * 100}
             />
           ))}
         </TabsContent>
 
         <TabsContent value="favorites" className="mt-4 space-y-4">
-          {favoriteNews.length > 0 ? (
-            favoriteNews.map((news, index) => (
+          {favoritePosts.length > 0 ? (
+            favoritePosts.map((news, index) => (
               <NewsCard
-                key={news.id}
+                key={index}
                 news={news}
                 isLiked={true}
-                onLike={() => {
-                  setLikedPosts(likedPosts.filter((id) => id !== news.id));
-                }}
+                onLike={() => () => handleLike(news)}
                 delay={index * 100}
               />
             ))

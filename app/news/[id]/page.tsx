@@ -17,26 +17,13 @@ export default function NewsDetailPage({ params }: { params: { id: string } }) {
 
   const addNewsStats = () => {
     router.push(`/news`);
-    const newsNumber = JSON.parse(localStorage.getItem("newsNumber") || "0");
-    localStorage.setItem("exerciseTotalTime", JSON.stringify(+newsNumber + 1));
-    const readQuantityNews = JSON.parse(
-      localStorage.getItem("readQuantityNews") || "0"
-    );
-    localStorage.setItem("exercises", JSON.stringify(readQuantityNews + 1));
+    const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const today = new Date();
+    const currentDay = daysOfWeek[today.getDay()];
+    const readStats = JSON.parse(localStorage.getItem("readStats") || "{}");
+    readStats[currentDay] = (readStats[currentDay] || 0) + 1;
+    localStorage.setItem("readStats", JSON.stringify(readStats));
   };
-  // const addNewsStats = () => {
-  //   const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
-  //   const newsStats = JSON.parse(localStorage.getItem("newsStats") || "{}");
-
-  //   if (!newsStats[today]) {
-  //     newsStats[today] = 0;
-  //   }
-
-  //   newsStats[today] += 1;
-
-  //   localStorage.setItem("newsStats", JSON.stringify(newsStats));
-  //   router.push(`/news`);
-  // };
 
   return (
     <div className="container px-4 py-6 space-y-6 animate-in">
