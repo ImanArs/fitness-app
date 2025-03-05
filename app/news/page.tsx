@@ -1,43 +1,49 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import { Card, CardContent } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Heart } from "lucide-react"
+import { useState } from "react";
+import Link from "next/link";
+import { Card, CardContent } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Heart } from "lucide-react";
+
+export const allNews = [
+  {
+    id: 1,
+    title: "10 Best Exercises for Building Muscle",
+    summary:
+      "Discover the most effective exercises to build muscle mass quickly and efficiently.",
+    image:
+      "https://images.ctfassets.net/8urtyqugdt2l/an332LVc89C33kZl3zNAp/cc364829dedecb7dde2ef092c289c2bc/desktop-bulgarian-split-squats.jpg",
+    likes: 245,
+    date: "2 days ago",
+  },
+  {
+    id: 2,
+    title: "Nutrition Tips for Better Recovery",
+    summary:
+      "Learn how proper nutrition can significantly improve your post-workout recovery time.",
+    image:
+      "https://i0.wp.com/www.muscleandfitness.com/wp-content/uploads/2019/07/Male-Stretching-Shadow.jpg?quality=86&strip=all",
+    likes: 189,
+    date: "5 days ago",
+  },
+  {
+    id: 3,
+    title: "The Science Behind HIIT Workouts",
+    summary:
+      "Understanding why High-Intensity Interval Training is so effective for fat loss and fitness.",
+    image:
+      "https://cdn.shopify.com/s/files/1/1214/7132/files/Woman_sweting_on_dumbells.jpg?v=1706282619",
+    likes: 312,
+    date: "1 week ago",
+  },
+];
 
 export default function NewsPage() {
-  const [activeTab, setActiveTab] = useState("all")
-  const [likedPosts, setLikedPosts] = useState<number[]>([2])
+  const [activeTab, setActiveTab] = useState("all");
+  const [likedPosts, setLikedPosts] = useState<number[]>([2]);
 
-  const allNews = [
-    {
-      id: 1,
-      title: "10 Best Exercises for Building Muscle",
-      summary: "Discover the most effective exercises to build muscle mass quickly and efficiently.",
-      image: "/placeholder.svg?height=200&width=400",
-      likes: 245,
-      date: "2 days ago",
-    },
-    {
-      id: 2,
-      title: "Nutrition Tips for Better Recovery",
-      summary: "Learn how proper nutrition can significantly improve your post-workout recovery time.",
-      image: "/placeholder.svg?height=200&width=400",
-      likes: 189,
-      date: "5 days ago",
-    },
-    {
-      id: 3,
-      title: "The Science Behind HIIT Workouts",
-      summary: "Understanding why High-Intensity Interval Training is so effective for fat loss and fitness.",
-      image: "/placeholder.svg?height=200&width=400",
-      likes: 312,
-      date: "1 week ago",
-    },
-  ]
-
-  const favoriteNews = allNews.filter((news) => likedPosts.includes(news.id))
+  const favoriteNews = allNews.filter((news) => likedPosts.includes(news.id));
 
   return (
     <div className="container px-4 py-6 space-y-6 animate-in">
@@ -57,9 +63,9 @@ export default function NewsPage() {
               isLiked={likedPosts.includes(news.id)}
               onLike={() => {
                 if (likedPosts.includes(news.id)) {
-                  setLikedPosts(likedPosts.filter((id) => id !== news.id))
+                  setLikedPosts(likedPosts.filter((id) => id !== news.id));
                 } else {
-                  setLikedPosts([...likedPosts, news.id])
+                  setLikedPosts([...likedPosts, news.id]);
                 }
               }}
               delay={index * 100}
@@ -75,18 +81,20 @@ export default function NewsPage() {
                 news={news}
                 isLiked={true}
                 onLike={() => {
-                  setLikedPosts(likedPosts.filter((id) => id !== news.id))
+                  setLikedPosts(likedPosts.filter((id) => id !== news.id));
                 }}
                 delay={index * 100}
               />
             ))
           ) : (
-            <div className="text-center py-8 text-muted-foreground">No favorite articles yet</div>
+            <div className="text-center py-8 text-muted-foreground">
+              No favorite articles yet
+            </div>
           )}
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }
 
 function NewsCard({
@@ -95,16 +103,20 @@ function NewsCard({
   onLike,
   delay,
 }: {
-  news: any
-  isLiked: boolean
-  onLike: () => void
-  delay: number
+  news: any;
+  isLiked: boolean;
+  onLike: () => void;
+  delay: number;
 }) {
   return (
     <Card className={`overflow-hidden animate-in-delay-${delay}`}>
       <Link href={`/news/${news.id}`}>
         <div className="aspect-[2/1] relative">
-          <img src={news.image || "/placeholder.svg"} alt={news.title} className="w-full h-full object-cover" />
+          <img
+            src={news.image || "/placeholder.svg"}
+            alt={news.title}
+            className="w-full h-full object-cover"
+          />
         </div>
       </Link>
       <CardContent className="p-4">
@@ -117,18 +129,23 @@ function NewsCard({
           <div className="flex items-center gap-1">
             <button
               onClick={(e) => {
-                e.preventDefault()
-                onLike()
+                e.preventDefault();
+                onLike();
               }}
               className="p-1"
             >
-              <Heart className={`w-5 h-5 ${isLiked ? "fill-primary text-primary" : "text-muted-foreground"}`} />
+              <Heart
+                className={`w-5 h-5 ${
+                  isLiked
+                    ? "fill-primary text-primary"
+                    : "text-muted-foreground"
+                }`}
+              />
             </button>
             <span>{news.likes}</span>
           </div>
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
-

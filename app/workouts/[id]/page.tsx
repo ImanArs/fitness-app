@@ -1,60 +1,74 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Clock, Flame, ArrowRight } from "lucide-react"
+"use client";
 
-export default function WorkoutDetailPage({ params }: { params: { id: string } }) {
-  // In a real app, you would fetch this data based on the ID
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Clock, Flame, ArrowRight } from "lucide-react";
+import { allNews } from "@/app/news/page";
+
+export default function WorkoutDetailPage({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const findedImg = allNews?.find(
+    (news) => news.id === Number.parseInt(params.id)
+  );
+
   const workout = {
     id: Number.parseInt(params.id),
     title: "Full Body Workout",
     description: "A complete workout targeting all major muscle groups",
     duration: "30 min",
     calories: 250,
-    image: "/placeholder.svg?height=300&width=600",
+    image: findedImg?.image,
     exercises: [
       {
         id: 1,
         name: "Push-ups",
         duration: "45 sec",
         calories: 30,
-        image: "/placeholder.svg?height=100&width=100",
+        image: findedImg?.image,
       },
       {
         id: 2,
         name: "Squats",
         duration: "60 sec",
         calories: 40,
-        image: "/placeholder.svg?height=100&width=100",
+        image: findedImg?.image,
       },
       {
         id: 3,
         name: "Lunges",
         duration: "45 sec",
         calories: 35,
-        image: "/placeholder.svg?height=100&width=100",
+        image: findedImg?.image,
       },
       {
         id: 4,
         name: "Plank",
         duration: "30 sec",
         calories: 25,
-        image: "/placeholder.svg?height=100&width=100",
+        image: findedImg?.image,
       },
       {
         id: 5,
         name: "Mountain Climbers",
         duration: "45 sec",
         calories: 45,
-        image: "/placeholder.svg?height=100&width=100",
+        image: findedImg?.image,
       },
     ],
-  }
+  };
 
   return (
     <div className="container px-4 py-6 space-y-6 animate-in">
       <div className="aspect-[2/1] relative rounded-lg overflow-hidden">
-        <img src={workout.image || "/placeholder.svg"} alt={workout.title} className="w-full h-full object-cover" />
+        <img
+          src={workout.image || "/placeholder.svg"}
+          alt={workout.title}
+          className="w-full h-full object-cover"
+        />
       </div>
 
       <div className="space-y-4">
@@ -86,7 +100,10 @@ export default function WorkoutDetailPage({ params }: { params: { id: string } }
         <h2 className="text-xl font-semibold mt-6">Exercises</h2>
         <div className="space-y-3">
           {workout.exercises.map((exercise, index) => (
-            <Card key={exercise.id} className={`animate-in-delay-${index * 100}`}>
+            <Card
+              key={exercise.id}
+              className={`animate-in-delay-${index * 100}`}
+            >
               <CardContent className="p-4 flex items-center gap-3">
                 <img
                   src={exercise.image || "/placeholder.svg"}
@@ -111,6 +128,5 @@ export default function WorkoutDetailPage({ params }: { params: { id: string } }
         </Link>
       </div>
     </div>
-  )
+  );
 }
-

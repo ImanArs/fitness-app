@@ -1,14 +1,18 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Heart, ArrowLeft } from "lucide-react"
-import { useRouter } from "next/navigation"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Heart, ArrowLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { allNews } from "../page";
 
 export default function NewsDetailPage({ params }: { params: { id: string } }) {
-  const router = useRouter()
-  const [isLiked, setIsLiked] = useState(false)
+  const router = useRouter();
+  const [isLiked, setIsLiked] = useState(false);
 
+  const findedImg = allNews.find(
+    (news) => news.id === Number.parseInt(params.id)
+  );
   // In a real app, you would fetch this data based on the ID
   const article = {
     id: Number.parseInt(params.id),
@@ -31,19 +35,28 @@ export default function NewsDetailPage({ params }: { params: { id: string } }) {
       <h2>5. Overhead Press</h2>
       <p>This exercise builds impressive shoulder strength and size while also engaging your triceps and upper chest.</p>
     `,
-    image: "/placeholder.svg?height=300&width=600",
+    image: findedImg?.image,
     likes: 245,
     date: "March 15, 2023",
-  }
+  };
 
   return (
     <div className="container px-4 py-6 space-y-6 animate-in">
-      <Button variant="ghost" size="icon" onClick={() => router.back()} className="mb-2">
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={() => router.back()}
+        className="mb-2"
+      >
         <ArrowLeft className="w-5 h-5" />
       </Button>
 
       <div className="aspect-[2/1] relative rounded-lg overflow-hidden">
-        <img src={article.image || "/placeholder.svg"} alt={article.title} className="w-full h-full object-cover" />
+        <img
+          src={article.image || "/placeholder.svg"}
+          alt={article.title}
+          className="w-full h-full object-cover"
+        />
       </div>
 
       <div className="space-y-4">
@@ -53,7 +66,13 @@ export default function NewsDetailPage({ params }: { params: { id: string } }) {
           <div className="text-muted-foreground">{article.date}</div>
           <div className="flex items-center gap-1">
             <button onClick={() => setIsLiked(!isLiked)} className="p-1">
-              <Heart className={`w-5 h-5 ${isLiked ? "fill-primary text-primary" : "text-muted-foreground"}`} />
+              <Heart
+                className={`w-5 h-5 ${
+                  isLiked
+                    ? "fill-primary text-primary"
+                    : "text-muted-foreground"
+                }`}
+              />
             </button>
             <span>{isLiked ? article.likes + 1 : article.likes}</span>
           </div>
@@ -65,6 +84,5 @@ export default function NewsDetailPage({ params }: { params: { id: string } }) {
         />
       </div>
     </div>
-  )
+  );
 }
-
